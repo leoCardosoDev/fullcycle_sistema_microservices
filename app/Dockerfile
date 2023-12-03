@@ -4,4 +4,4 @@ WORKDIR /go/src/app
 
 COPY . .
 
-CMD ["go", "run", "main.go"]
+CMD ["go", "run", "cmd/walletcore/main.go"]
