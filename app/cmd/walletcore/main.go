@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 
@@ -12,6 +13,7 @@ import (
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/web"
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/web/webserver"
 	"github.com.br/devfullcycle/fc-ms-wallet/pkg/events"
+	"github.com.br/devfullcycle/fc-ms-wallet/pkg/uow"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -26,11 +28,20 @@ func main() {
 	// eventDispatcher.Register("TransactionCreated", handler)
 	clientDb := database.NewClientDb(db)
 	accountDb := database.NewAccountDB(db)
-	transactionDb := database.NewTransactionDB(db)
+
+	ctx := context.Background()
+	uow := uow.NewUow(ctx, db)
+	uow.Register("AccountDB", func (tx *sql.Tx) interface{} {
+		return database.NewAccountDB(db)
+	})
+
+	uow.Register("TransactionDB", func (tx *sql.Tx) interface{} {
+    return database.NewTransactionDB(db)
+  })
 
 	createClientUsecase := create_client.NewCreateClientUseCase(clientDb)
 	createAccountUsecase := create_account.NewCreateAccountUseCase(accountDb, clientDb)
-	createTransactionUsecase := create_transaction.NewCreateTransactionUseCase(transactionDb, accountDb, eventDispatcher, transactionCreatedEvent)
+	createTransactionUsecase := create_transaction.NewCreateTransactionUseCase(uow, eventDispatcher, transactionCreatedEvent)
 
 	webserver := webserver.NewWebServer(":3000")
 	
