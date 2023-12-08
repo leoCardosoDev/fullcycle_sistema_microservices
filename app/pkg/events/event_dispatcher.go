@@ -1,6 +1,9 @@
 package events
 
-import "errors"
+import (
+	"errors"
+	"sync"
+)
 
 var ErrHandlerAlreadyRegistered = errors.New("handler already registered")
 
@@ -12,6 +15,18 @@ func NewEventDispatcher() *EventDispatcher {
 	return &EventDispatcher{
 		handlers: make(map[string][]EventHandlerInterface),
 	}
+}
+
+func (ev *EventDispatcher) Dispatch(event EventInterface) error {
+	if handlers, ok := ev.handlers[event.GetName()]; ok {
+		wg := &sync.WaitGroup{}
+		for _, handler := range handlers {
+			wg.Add(1)
+			go handler.Handle(event, wg)
+		}
+		wg.Wait()
+	}
+	return nil
 }
 
 func (ed *EventDispatcher) Register(eventName string, handler EventHandlerInterface) error {
@@ -37,20 +52,11 @@ func (ed *EventDispatcher) Has(eventName string, handler EventHandlerInterface) 
 	return false
 }
 
-func (ev *EventDispatcher) Dispatch(event EventInterface) error {
-	if handlers, ok := ev.handlers[event.GetName()]; ok {
-		for _, handler := range handlers {
-			handler.Handle(event)
-		}
-	}
-	return nil
-}
-
 func (ed *EventDispatcher) Remove(eventName string, handler EventHandlerInterface) error {
 	if _, ok := ed.handlers[eventName]; ok {
 		for i, h := range ed.handlers[eventName] {
 			if h == handler {
-				ed.handlers[eventName] = append(ed.handlers[eventName][:i], ed.handlers[eventName][i+1:]... )
+				ed.handlers[eventName] = append(ed.handlers[eventName][:i], ed.handlers[eventName][i+1:]...)
 				return nil
 			}
 		}
@@ -58,6 +64,6 @@ func (ed *EventDispatcher) Remove(eventName string, handler EventHandlerInterfac
 	return nil
 }
 
-func(ed *EventDispatcher) Clear() {
+func (ed *EventDispatcher) Clear() {
 	ed.handlers = make(map[string][]EventHandlerInterface)
 }
