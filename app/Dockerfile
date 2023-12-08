@@ -1,7 +1,7 @@
-FROM golang:1.19.2
+FROM golang:1.20
 
-WORKDIR /go/src/app
+WORKDIR /app/
 
-COPY . .
+RUN apt-get update && apt-get install -y librdkafka-dev
 
-CMD ["go", "run", "cmd/walletcore/main.go"]
+CMD ["tail", "-f", "/dev/null"]
