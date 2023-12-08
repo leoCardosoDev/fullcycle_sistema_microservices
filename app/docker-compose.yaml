@@ -4,6 +4,7 @@ services:
   goapp: 
     build: .
     platform: linux/amd64
+    container_name: goapp
     volumes:
       - .:/app
     ports:
@@ -12,6 +13,7 @@ services:
   mysql:
     image: mysql:5.7
     platform: linux/amd64
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wallet
