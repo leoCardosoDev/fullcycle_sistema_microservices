@@ -87,7 +87,6 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Register_WithSameHand
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatcher_Clear() {
-	// Event 1
 	err := suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
 	suite.Nil(err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
@@ -96,7 +95,6 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Clear() {
 	suite.Nil(err)
 	suite.Equal(2, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
 
-	// Event 2
 	err = suite.eventDispatcher.Register(suite.event2.GetName(), &suite.handler3)
 	suite.Nil(err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event2.GetName()]))
@@ -106,7 +104,6 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Clear() {
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatcher_Has() {
-	// Event 1
 	err := suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
 	suite.Nil(err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
@@ -121,7 +118,6 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Has() {
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatcher_Remove() {
-	// Event 1
 	err := suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
 	suite.Nil(err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
@@ -130,7 +126,6 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Remove() {
 	suite.Nil(err)
 	suite.Equal(2, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
 
-	// Event 2
 	err = suite.eventDispatcher.Register(suite.event2.GetName(), &suite.handler3)
 	suite.Nil(err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event2.GetName()]))
