@@ -31,4 +31,5 @@ System_Boundary(digital_wallet, "Digital Wallet") {
   Rel(wallet_core, balance_service, "Uses", "Topic", $tags = "async")
   Rel(wallet_core, statement_service, "Uses", "Topic", $tags = "async")
 }
+
 @enduml
